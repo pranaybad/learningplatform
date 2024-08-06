@@ -1,0 +1,19 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Create Category{% endblock %}
+
+{% block content %}
+<section class="py-16 bg-gray-100">
+    <div class="container mx-auto px-4 max-w-md">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
+            <h2 class="text-2xl font-bold mb-4 text-center">Create Category</h2>
+            <form method="POST" enctype="multipart/form-data" action="{% url 'create_category' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-full shadow-md font-semibold hover:bg-blue-700 w-full">Create Category</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

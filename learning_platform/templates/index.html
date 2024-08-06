@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome to the Learning Platform{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-r from-blue-500 to-blue-700 text-white py-24">
+    <div class="container mx-auto px-6 text-center">
+        <h1 class="text-5xl font-extrabold mb-6 tracking-wide leading-tight">Welcome to the Community Learning Platform</h1>
+        <p class="text-xl mb-10 font-light">Join our community and enhance your skills with the best online courses.</p>
+        <a href="{% url 'category_list' %}" class="bg-white text-blue-600 py-3 px-8 rounded-full shadow-lg font-semibold hover:bg-gray-200 transition duration-300 ease-in-out">Explore Categories</a>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">How It Works</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <div class="bg-blue-100 text-blue-600 p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-graduate text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Sign Up</h3>
+                <p class="text-gray-600">Create an account and start your learning journey.</p>
+            </div>
+            <div class="text-center">
+                <div class="bg-blue-100 text-blue-600 p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-book-open text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Choose a Course</h3>
+                <p class="text-gray-600">Browse our wide range of courses and find what suits you best.</p>
+            </div>
+            <div class="text-center">
+                <div class="bg-blue-100 text-blue-600 p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-certificate text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Start Learning</h3>
+                <p class="text-gray-600">Engage with high-quality content and earn certificates.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Courses Section -->
+<section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Featured Courses</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {% for course in featured_courses %}
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <img src="{{ course.image.url }}" alt="{{ course.title }}" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">{{ course.title }}</h3>
+                    <p class="text-gray-600 mb-4">{{ course.description|truncatewords:20 }}</p>
+                    <a href="{% url 'course_detail' course.slug %}" class="text-blue-600 font-semibold mt-4 block hover:text-blue-800 transition-colors duration-300">Learn More</a>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center text-gray-600">No featured courses available at the moment.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-20 bg-gradient-to-r from-purple-500 to-purple-700 text-white">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-12">What Our Students Say</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+            <div class="bg-white text-gray-800 rounded-lg shadow-lg p-6">
+                <p class="mb-4">"This platform has completely changed the way I approach learning. The courses are top-notch and the community is so supportive!"</p>
+                <div class="text-right">
+                    <h3 class="font-semibold">Jane Doe</h3>
+                    <p class="text-sm text-gray-600">Web Developer</p>
+                </div>
+            </div>
+            <div class="bg-white text-gray-800 rounded-lg shadow-lg p-6">
+                <p class="mb-4">"The courses are well-structured and the instructors are very knowledgeable. I’ve learned so much in a short time."</p>
+                <div class="text-right">
+                    <h3 class="font-semibold">John Smith</h3>
+                    <p class="text-sm text-gray-600">Data Scientist</p>
+                </div>
+            </div>
+            <div class="bg-white text-gray-800 rounded-lg shadow-lg p-6">
+                <p class="mb-4">"I love the flexibility this platform offers. I can learn at my own pace and the content is always up to date."</p>
+                <div class="text-right">
+                    <h3 class="font-semibold">Emily Johnson</h3>
+                    <p class="text-sm text-gray-600">Marketing Specialist</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+{% if user.is_authenticated %}
+<section class="py-20 bg-white text-center">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800">We hope you enjoy our Platform</h2>
+        <p class="text-gray-600 mb-8">Access the best quality courses tailored to your needs.</p>
+    </div>
+</section>
+{% else %}
+<section class="py-20 bg-gradient-to-r from-teal-500 to-teal-700 text-center text-white">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-6">Ready to start learning?</h2>
+        <p class="text-lg mb-8">Sign up today and get access to all courses and learning materials.</p>
+        <a href="{% url 'account_signup' %}" class="bg-white text-teal-600 py-3 px-8 rounded-full shadow-lg font-semibold hover:bg-gray-200 transition duration-300 ease-in-out">Sign Up Now</a>
+    </div>
+</section>
+{% endif %}
+
+<!-- Footer -->
+
+{% endblock %}

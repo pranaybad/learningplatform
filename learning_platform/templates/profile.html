@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<section class="py-16 bg-gray-100">
+    <div class="container mx-auto px-4 max-w-md">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
+            <h2 class="text-2xl font-bold mb-4 text-center">My Profile</h2>
+            <form method="POST" enctype="multipart/form-data">
+                
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="email" class="block text-gray-700">Email Address</label>
+                    {{ user_form.email }}
+                </div>
+                <div class="mb-4">
+                    <label for="first_name" class="block text-gray-700">First Name</label>
+                    {{ user_form.first_name }}
+                </div>
+                <div class="mb-4">
+                    <label for="last_name" class="block text-gray-700">Last Name</label>
+                    {{ user_form.last_name }}
+                </div>
+                <div class="mb-4">
+                    <label for="bio" class="block text-gray-700">Bio</label>
+                    {{ profile_form.bio }}
+                </div>
+                <div class="mb-4">
+                    <label for="profile_picture" class="block text-gray-700">Profile Picture</label>
+                    {{ profile_form.profile_picture }}
+                </div>
+                <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-full shadow-md font-semibold hover:bg-blue-700 w-full">Save Changes</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
