@@ -16,44 +16,66 @@
             <h2 class="text-xl font-semibold mb-4">Profile Information</h2>
             <p><strong>Name:</strong> {{ user.username }}</p>
             <p><strong>Email:</strong> {{ user.email }}</p>
-            {% comment %} <a href="{% url 'edit_profile' %}" class="text-blue-600 hover:text-blue-700">Edit Profile</a> {% endcomment %}
+            <p><strong>Role:</strong> {{ user_profile.get_role_display }}</p>
         </div>
 
         <!-- Enrolled Courses -->
         <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
             <h2 class="text-xl font-semibold mb-4">Enrolled Courses</h2>
             <ul>
-                {% for course in enrolled_courses %}
+                {% for enrollment in enrolled_courses %}
                 <li class="mb-4">
-                    <h3 class="text-lg font-semibold">{{ course.title }}</h3>
-                    <p>Progress: {{ course.progress }}%</p>
-                    <a href="{% url 'course_detail' course.slug %}" class="text-blue-600 hover:text-blue-700">View Course</a>
+                    <h3 class="text-lg font-semibold">{{ enrollment.course.title }}</h3>
+                    <p>Progress: {{ enrollment.progress }}%</p> <!-- Assuming you're tracking progress -->
+                    <a href="{% url 'course_detail' enrollment.course.slug %}" class="text-blue-600 hover:text-blue-700">View Course</a>
                 </li>
-                {% empty %}
+            {% empty %}
                 <li>No courses enrolled yet.</li>
-                {% endfor %}
+            {% endfor %}
+            
             </ul>
         </div>
 
         <!-- Upcoming Deadlines/Events -->
         <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
             <h2 class="text-xl font-semibold mb-4">Upcoming Deadlines/Events</h2>
-            <!-- Example static content -->
-            <p>No upcoming deadlines or events.</p>
+            {% if upcoming_deadlines %}
+                <ul>
+                    {% for deadline in upcoming_deadlines %}
+                    <li>{{ deadline }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No upcoming deadlines or events.</p>
+            {% endif %}
         </div>
 
         <!-- Recent Activity -->
         <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
             <h2 class="text-xl font-semibold mb-4">Recent Activity</h2>
-            <!-- Example static content -->
-            <p>No recent activity.</p>
+            {% if recent_activity %}
+                <ul>
+                    {% for activity in recent_activity %}
+                    <li>{{ activity }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No recent activity.</p>
+            {% endif %}
         </div>
 
         <!-- Notifications -->
         <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
             <h2 class="text-xl font-semibold mb-4">Notifications</h2>
-            <!-- Example static content -->
-            <p>No new notifications.</p>
+            {% if notifications %}
+                <ul>
+                    {% for notification in notifications %}
+                    <li>{{ notification }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No new notifications.</p>
+            {% endif %}
         </div>
     </div>
 </section>

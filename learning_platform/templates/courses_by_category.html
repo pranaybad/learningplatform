@@ -16,7 +16,15 @@
                     <h3 class="text-lg font-semibold mb-2">{{ course.title }}</h3>
                     <p class="text-gray-600">{{ course.description|truncatewords:20 }}</p>
                     {% if course.video_url %}
-                        <a href="{{ course.video_url }}" class="text-blue-600 font-semibold mt-4 block" target="_blank">Watch Video</a>
+                        {% with course.video_url|slice:"-11:" as video_id %}
+                        {% if video_id %}
+                            <div class="mt-4">
+                                <iframe src="https://www.youtube.com/embed/{{ video_id }}" class="w-full h-64" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                        {% else %}
+                            <p class="text-red-600 mt-4">Invalid video URL or ID</p>
+                        {% endif %}
+                        {% endwith %}
                     {% endif %}
                     <a href="{% url 'course_detail' course.id %}" class="text-blue-600 font-semibold mt-4 block">Learn More</a>
                 </div>

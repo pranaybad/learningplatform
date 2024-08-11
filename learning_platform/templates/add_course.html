@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Add New Course{% endblock %}
+
+{% block content %}
+<section class="py-16 bg-gray-100">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <h2 class="text-3xl font-bold mb-6 text-center">Add New Course</h2>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden p-8">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ form.title.label }}</label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <p class="text-red-600 text-sm">{{ form.title.errors }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-4">
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ form.description.label }}</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <p class="text-red-600 text-sm">{{ form.description.errors }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-4">
+                    <label for="{{ form.image.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ form.image.label }}</label>
+                    {{ form.image }}
+                    {% if form.image.errors %}
+                        <p class="text-red-600 text-sm">{{ form.image.errors }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-4">
+                    <label for="{{ form.video_url.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ form.video_url.label }}</label>
+                    {{ form.video_url }}
+                    {% if form.video_url.errors %}
+                        <p class="text-red-600 text-sm">{{ form.video_url.errors }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-4">
+                    <label for="{{ form.video_file.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ form.video_file.label }}</label>
+                    {{ form.video_file }}
+                    {% if form.video_file.errors %}
+                        <p class="text-red-600 text-sm">{{ form.video_file.errors }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-4">
+                    <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ form.category.label }}</label>
+                    {{ form.category }}
+                    {% if form.category.errors %}
+                        <p class="text-red-600 text-sm">{{ form.category.errors }}</p>
+                    {% endif %}
+                </div>
+            
+                <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-full shadow-md font-semibold hover:bg-blue-700 w-full">Add Course</button>
+            </form>
+            
+            <div class="mt-4 text-center">
+                <a href="{% url 'course_list' %}" class="text-blue-600 font-semibold hover:underline">Back to Courses</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

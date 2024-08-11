@@ -17,6 +17,11 @@
                     <p class="text-gray-600">{{ course.description|truncatewords:20 }}</p>
                     {% if course.video_url %}
                         <a href="{{ course.video_url }}" class="text-blue-600 font-semibold mt-4 block" target="_blank">Watch Video</a>
+                    {% elif course.video_file %}
+                        <video controls class="w-full h-auto mt-4">
+                            <source src="{{ course.video_file.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
                     {% endif %}
                     <a href="{% url 'course_detail' course.id %}" class="text-blue-600 font-semibold mt-4 block">Learn More</a>
                 </div>

@@ -5,32 +5,52 @@
 {% block content %}
 <section class="py-16 bg-gray-100">
     <div class="container mx-auto px-4 max-w-md">
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
-            <h2 class="text-2xl font-bold mb-4 text-center">My Profile</h2>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden p-8">
+            <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">My Profile</h2>
             <form method="POST" enctype="multipart/form-data">
-                
                 {% csrf_token %}
-                <div class="mb-4">
-                    <label for="email" class="block text-gray-700">Email Address</label>
-                    {{ user_form.email }}
+                
+                <div class="mb-6">
+                    <label for="{{ user_form.email.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ user_form.email.label }}</label>
+                    {{ user_form.email|add_class:"block w-full px-4 py-3 rounded-full border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" }}
+                    {% if user_form.email.errors %}
+                        <p class="text-red-600 text-sm">{{ user_form.email.errors }}</p>
+                    {% endif %}
                 </div>
-                <div class="mb-4">
-                    <label for="first_name" class="block text-gray-700">First Name</label>
-                    {{ user_form.first_name }}
+
+                <div class="mb-6">
+                    <label for="{{ user_form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ user_form.first_name.label }}</label>
+                    {{ user_form.first_name|add_class:"block w-full px-4 py-3 rounded-full border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" }}
+                    {% if user_form.first_name.errors %}
+                        <p class="text-red-600 text-sm">{{ user_form.first_name.errors }}</p>
+                    {% endif %}
                 </div>
-                <div class="mb-4">
-                    <label for="last_name" class="block text-gray-700">Last Name</label>
-                    {{ user_form.last_name }}
+
+                <div class="mb-6">
+                    <label for="{{ user_form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ user_form.last_name.label }}</label>
+                    {{ user_form.last_name|add_class:"block w-full px-4 py-3 rounded-full border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" }}
+                    {% if user_form.last_name.errors %}
+                        <p class="text-red-600 text-sm">{{ user_form.last_name.errors }}</p>
+                    {% endif %}
                 </div>
-                <div class="mb-4">
-                    <label for="bio" class="block text-gray-700">Bio</label>
-                    {{ profile_form.bio }}
+
+                <div class="mb-6">
+                    <label for="{{ profile_form.bio.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ profile_form.bio.label }}</label>
+                    {{ profile_form.bio|add_class:"block w-full px-4 py-3 rounded-full border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" }}
+                    {% if profile_form.bio.errors %}
+                        <p class="text-red-600 text-sm">{{ profile_form.bio.errors }}</p>
+                    {% endif %}
                 </div>
-                <div class="mb-4">
-                    <label for="profile_picture" class="block text-gray-700">Profile Picture</label>
-                    {{ profile_form.profile_picture }}
+
+                <div class="mb-6">
+                    <label for="{{ profile_form.profile_picture.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ profile_form.profile_picture.label }}</label>
+                    {{ profile_form.profile_picture|add_class:"block w-full px-4 py-3 rounded-full border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" }}
+                    {% if profile_form.profile_picture.errors %}
+                        <p class="text-red-600 text-sm">{{ profile_form.profile_picture.errors }}</p>
+                    {% endif %}
                 </div>
-                <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-full shadow-md font-semibold hover:bg-blue-700 w-full">Save Changes</button>
+                
+                <button type="submit" class="bg-blue-600 text-white py-3 px-4 rounded-full shadow-md font-semibold hover:bg-blue-700 w-full transition duration-300">Save Changes</button>
             </form>
         </div>
     </div>

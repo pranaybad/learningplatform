@@ -13,8 +13,7 @@
                 <h1 class="text-3xl font-bold mb-4">{{ course.title }}</h1>
                 <p class="text-gray-600 mb-4">{{ course.description }}</p>
                 {% if course.video_url %}
-                    <a href="{{ course.video_url }}" class="text-blue-600" target="_blank">Watch Course Video</a>
-                   
+                    <a href="{% url 'courses_by_category' category.id %}" class="text-blue-600 font-semibold hover:underline">View Courses</a>
                 {% endif %}
             </div>
         </div>

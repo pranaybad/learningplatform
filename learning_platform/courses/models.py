@@ -16,7 +16,6 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
-
 class Category(models.Model):
     name = models.CharField(max_length=100)
     image = models.ImageField(upload_to='category_images/', blank=True, null=True)
@@ -24,13 +23,13 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-
 class Course(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True, editable=False)
     description = models.TextField()
     image = models.ImageField(upload_to='course_images/', blank=True, null=True)
     video_url = models.URLField(blank=True, null=True)
+    video_file = models.FileField(upload_to='course_videos/', blank=True, null=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='courses')
     date_created = models.DateTimeField(auto_now_add=True)
@@ -54,3 +53,11 @@ class Contact(models.Model):
 
     def __str__(self):
         return f'{self.uname} - {self.email}'
+
+class Enrollment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrollments')
+    course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='enrollments')
+    progress = models.IntegerField(default=0)  # Optional field to track progress in a course
+
+    def __str__(self):
+        return f'{self.user.username} enrolled in {self.course.title}'

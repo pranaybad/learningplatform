@@ -8,7 +8,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Course, Category ,Contact
 from .forms import CourseForm
 from .forms import UserForm, UserProfileForm
-from .models import UserProfile
+from .models import UserProfile,Enrollment
+from django.core.exceptions import PermissionDenied
 
 def index(request):
 
@@ -24,8 +25,14 @@ def course_list(request):
 
 def course_detail(request, slug):
     course = get_object_or_404(Course, slug=slug)
-    # courses = Course.objects.all()
-    return render(request, 'course_detail.html', {'course': course})
+    category = course.category  
+    related_courses = Course.objects.filter(category=category).exclude(id=course.id)
+
+    return render(request, 'course_detail.html', {
+        'course': course,
+        'category': category,  
+        'related_courses': related_courses,  
+    })
 
 
 def create_course(request):
@@ -33,11 +40,18 @@ def create_course(request):
         form = CourseForm(request.POST, request.FILES)
         if form.is_valid():
             course = form.save(commit=False)
-            course.created_by = request.user
-            course.save()
-            return redirect('course_list')
+            # Ensure that either video_url or video_file is provided
+            if not course.video_url and not course.video_file:
+                form.add_error(None, 'You must provide either a video URL or upload a video file.')
+            elif course.video_url and course.video_file:
+                form.add_error(None, 'Please provide only one of the video URL or video file.')
+            else:
+                course.created_by = request.user
+                course.save()
+                return redirect('course_list')
     else:
         form = CourseForm()
+    
     return render(request, 'create_course.html', {'form': form})
 
 def category_list(request):
@@ -49,11 +63,34 @@ def courses_by_category(request, category_id):
     courses = Course.objects.filter(category=category)
     return render(request, 'courses_by_category.html', {'category': category, 'courses': courses})
 
-
 @login_required
 def dashboard(request):
+    user = request.user
     
-    return render(request, 'dashboard.html')
+    
+    enrolled_courses = Enrollment.objects.filter(user=user)
+    
+    try:
+        user_profile = user.userprofile
+    except UserProfile.DoesNotExist:
+        user_profile = UserProfile.objects.create(user=user)
+    
+
+    upcoming_deadlines = []
+    recent_activity = []
+    notifications = []
+
+    context = {
+        'user': user,
+        'user_profile': user_profile,
+        'enrolled_courses': enrolled_courses,
+        'upcoming_deadlines': upcoming_deadlines,
+        'recent_activity': recent_activity,
+        'notifications': notifications,
+    }
+    
+    return render(request, 'dashboard.html', context)
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -74,14 +111,15 @@ def logout_view(request):
 
 def signup_view(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-           
-            return redirect('account_login')
+            auth_login(request, user)
+            return redirect('home')  
     else:
-        form = UserCreationForm()
+        form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
+
 
 
 
@@ -89,8 +127,7 @@ def signup_view(request):
 @login_required
 def profile(request):
     user = request.user
-    
-   
+
     try:
         profile = user.userprofile
     except UserProfile.DoesNotExist:
@@ -103,7 +140,7 @@ def profile(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            return redirect('/')
+            return redirect('profile')
     else:
         user_form = UserForm(instance=user)
         profile_form = UserProfileForm(instance=profile)
@@ -129,3 +166,22 @@ def contact(request):
         return redirect('')
 
 
+
+@login_required
+def add_course(request):
+    
+    if not request.user.userprofile.role == 'creator':
+        raise PermissionDenied
+
+    if request.method == 'POST':
+        form = CourseForm(request.POST, request.FILES)
+        if form.is_valid():
+            
+            course = form.save(commit=False)
+            course.created_by = request.user
+            course.save()
+            return redirect('course_list')  
+    else:
+        form = CourseForm()
+
+    return render(request, 'add_course.html', {'form': form})

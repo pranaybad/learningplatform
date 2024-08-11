@@ -7,16 +7,30 @@ from .models import UserProfile
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(required=True)
+    role = forms.ChoiceField(choices=[('student', 'Student'), ('creator', 'Course Creator')], required=True)  # Inline choices
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2')
+        fields = ('username', 'email', 'password1', 'password2', 'role')
+
+
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+            # Create the UserProfile and assign the role
+            UserProfile.objects.create(user=user, role=self.cleaned_data['role'])
+        return user
+
 
 
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ['title', 'description', 'image', 'video_url', 'category']
+        fields = ['title', 'description', 'image', 'video_url', 'video_file', 'category']
+
 
 
 
@@ -35,4 +49,4 @@ class UserForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['bio', 'profile_picture']
+        fields = ['bio', 'profile_picture', 'role'] 

@@ -1,14 +1,34 @@
-{% extends 'base.html' %}
-
-{% block title %}Welcome to the Learning Platform{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% block title %}Welcome to the Learning Platform{% endblock %} {% block content %}
 <!-- Hero Section -->
 <section class="bg-gradient-to-r from-blue-500 to-blue-700 text-white py-24">
     <div class="container mx-auto px-6 text-center">
         <h1 class="text-5xl font-extrabold mb-6 tracking-wide leading-tight">Welcome to the Community Learning Platform</h1>
         <p class="text-xl mb-10 font-light">Join our community and enhance your skills with the best online courses.</p>
         <a href="{% url 'category_list' %}" class="bg-white text-blue-600 py-3 px-8 rounded-full shadow-lg font-semibold hover:bg-gray-200 transition duration-300 ease-in-out">Explore Categories</a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-20 bg-gray-100">
+    <div class="container mx-auto px-6">
+        <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Why Choose Us?</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 text-center">
+            <div class="p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-300">
+                <i class="fas fa-chalkboard-teacher text-5xl text-blue-600 mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">Expert Instructors</h3>
+                <p class="text-gray-600">Learn from industry professionals with years of experience.</p>
+            </div>
+            <div class="p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-300">
+                <i class="fas fa-layer-group text-5xl text-blue-600 mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">Diverse Courses</h3>
+                <p class="text-gray-600">Choose from a wide range of courses across various fields.</p>
+            </div>
+            <div class="p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-300">
+                <i class="fas fa-user-shield text-5xl text-blue-600 mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">Lifetime Access</h3>
+                <p class="text-gray-600">Enjoy unlimited access to your courses at any time.</p>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -48,12 +68,12 @@
         <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Featured Courses</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {% for course in featured_courses %}
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <img src="{{ course.image.url }}" alt="{{ course.title }}" class="w-full h-56 object-cover">
+            <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
+                <img src="{{ course.image.url }}" alt="{{ course.title }}" class="w-full h-56 object-cover rounded-t-lg">
                 <div class="p-6">
-                    <h3 class="text-xl font-semibold mb-4 text-gray-800">{{ course.title }}</h3>
-                    <p class="text-gray-600 mb-4">{{ course.description|truncatewords:20 }}</p>
-                    <a href="{% url 'course_detail' course.slug %}" class="text-blue-600 font-semibold mt-4 block hover:text-blue-800 transition-colors duration-300">Learn More</a>
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800 truncate">{{ course.title }}</h3>
+                    <p class="text-gray-600 mb-4 text-sm">{{ course.description|truncatewords:15 }}</p>
+                    <a href="{% url 'course_detail' course.slug %}" class="text-blue-600 font-semibold hover:text-blue-800 transition-colors duration-300">Learn More</a>
                 </div>
             </div>
             {% empty %}
@@ -62,6 +82,8 @@
         </div>
     </div>
 </section>
+
+
 
 <!-- Testimonials Section -->
 <section class="py-20 bg-gradient-to-r from-purple-500 to-purple-700 text-white">
@@ -111,6 +133,11 @@
 </section>
 {% endif %}
 
-<!-- Footer -->
-
+<!-- Newsletter Section -->
+<section class="py-20 bg-blue-600 text-white">
+    <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold mb-6">Stay Updated!</h2>
+        <p class="text-lg mb-8">Subscribe to our newsletter to receive the latest updates on new courses and promotions.</p>
+    </div>
+</section>
 {% endblock %}
