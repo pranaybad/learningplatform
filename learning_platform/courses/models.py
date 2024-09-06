@@ -23,6 +23,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+# models.py
 class Course(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True, editable=False)
@@ -33,7 +34,10 @@ class Course(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='courses')
     date_created = models.DateTimeField(auto_now_add=True)
-    is_featured = models.BooleanField(default=False)  
+    is_featured = models.BooleanField(default=False)
+    premium = models.BooleanField(default=False)  # New field for premium courses
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    is_premium = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -45,6 +49,7 @@ class Course(models.Model):
 
     class Meta:
         ordering = ['-date_created']
+
 
 class Contact(models.Model):
     uname = models.CharField(max_length=20)
@@ -58,6 +63,7 @@ class Enrollment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrollments')
     course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='enrollments')
     progress = models.IntegerField(default=0)  # Optional field to track progress in a course
+    paid = models.BooleanField(default=False)  # Indicates whether the user has paid for the course
 
     def __str__(self):
         return f'{self.user.username} enrolled in {self.course.title}'

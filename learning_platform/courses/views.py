@@ -10,6 +10,100 @@ from .forms import CourseForm
 from .forms import UserForm, UserProfileForm
 from .models import UserProfile,Enrollment
 from django.core.exceptions import PermissionDenied
+import razorpay
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.http import HttpResponse
+import hashlib
+
+client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+# client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+@login_required
+def course_detail(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    category = course.category
+    related_courses = Course.objects.filter(category=category).exclude(id=course.id)
+
+    if course.is_premium:
+        enrolled = Enrollment.objects.filter(user=request.user, course=course).exists()
+        if not enrolled:
+            return redirect('checkout', slug=slug)
+
+    return render(request, 'course_detail.html', {
+        'course': course,
+        'category': category,
+        'related_courses': related_courses,
+    })
+
+@login_required
+
+def checkout(request, slug):
+    # Get the course object based on the slug
+    course = get_object_or_404(Course, slug=slug)
+    user = request.user
+    # context={}
+    # context['amount']=900
+    
+    enrollment = Enrollment.objects.filter(user=user, course=course).first()
+    if enrollment and enrollment.paid:
+        return redirect('course_detail', slug=slug)
+
+
+    # if request.method == 'POST':
+        # Initialize Razorpay client
+    client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+    # Prepare order details
+    order_amount = int(course.price * 100)  # Convert to smallest currency unit (e.g., paise for INR)
+    order_currency = "INR"
+    # order_receipt = f'order_rcptid_{slug[:35]}'
+
+    # Create order
+    order = client.order.create({
+        'amount': order_amount,
+        'currency': order_currency,
+        # 'receipt': order_receipt,
+        'payment_capture': '1'
+    })
+    # Prepare context for rendering the template
+    context = {
+        'course': course,
+        'order_id': order['id'],
+        'amount': order_amount,
+        'currency': order_currency,
+        'razorpay_key': settings.RAZORPAY_KEY_ID
+    }
+    print('his context',context,)
+        # Render the checkout template with the context
+    return render(request, 'checkout.html',context)
+
+    # Render the checkout page for GET requests
+    return render(request, 'checkout.html', {'course': course})
+
+
+
+@csrf_exempt
+def payment_success(request):
+    if request.method == 'POST':
+        course_slug = request.POST.get('course_slug')
+        course = get_object_or_404(Course, slug=course_slug)
+        user = request.user
+        
+        # Get or create the enrollment record
+        enrollment, created = Enrollment.objects.get_or_create(user=user, course=course)
+        
+        if created or not enrollment.paid:
+            enrollment.paid = True
+            enrollment.save()
+
+        return redirect('course_detail', slug=course_slug)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+    # index and other
 
 def index(request):
 
@@ -20,19 +114,31 @@ def index(request):
 
 def course_list(request):
     courses = Course.objects.all()
-    return render(request, 'course_list.html', {'courses': courses})
+    enrolled_courses = Enrollment.objects.filter(user=request.user).values_list('course_id', flat=True)
+    return render(request, 'course_list.html', {
+        'courses': courses,
+        'enrolled_courses': enrolled_courses,
+    })
 
-
+@login_required
 def course_detail(request, slug):
     course = get_object_or_404(Course, slug=slug)
-    category = course.category  
-    related_courses = Course.objects.filter(category=category).exclude(id=course.id)
-
-    return render(request, 'course_detail.html', {
+    user = request.user
+    enrolled = Enrollment.objects.filter(user=user, course=course).exists()
+    enrollment = Enrollment.objects.filter(user=user, course=course).first()
+    has_paid = enrollment.paid if enrollment else False
+    
+    if course.is_premium and not has_paid:
+        return redirect('checkout', slug=slug)
+    
+    context = {
         'course': course,
-        'category': category,  
-        'related_courses': related_courses,  
-    })
+        'enrolled': enrolled,
+        'has_paid': has_paid
+    }
+    
+    return render(request, 'course_detail.html', context)
+
 
 
 def create_course(request):
@@ -58,10 +164,18 @@ def category_list(request):
     categories = Category.objects.all()
     return render(request, 'category_list.html', {'categories': categories})
 
+
 def courses_by_category(request, category_id):
     category = get_object_or_404(Category, id=category_id)
     courses = Course.objects.filter(category=category)
-    return render(request, 'courses_by_category.html', {'category': category, 'courses': courses})
+    
+    enrolled_courses = Enrollment.objects.filter(user=request.user).values_list('course_id', flat=True) if request.user.is_authenticated else []
+    
+    return render(request, 'courses_by_category.html', {
+        'category': category,
+        'courses': courses,
+        'enrolled_courses': enrolled_courses,
+    })
 
 @login_required
 def dashboard(request):

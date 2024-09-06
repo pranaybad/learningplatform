@@ -4,16 +4,32 @@
 
 {% block content %}
 <section class="py-16 bg-gray-100">
-    <div class="container mx-auto px-4 max-w-3xl">
+    <div class="container mx-auto px-4">
+        <h2 class="text-2xl font-bold mb-8">{{ course.title }}</h2>
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             {% if course.image %}
-                <img src="{{ course.image.url }}" alt="{{ course.title }}" class="w-full h-64 object-cover">
+                <img src="{{ course.image.url }}" alt="{{ course.title }}" class="w-full h-48 object-cover">
             {% endif %}
-            <div class="p-6">
-                <h1 class="text-3xl font-bold mb-4">{{ course.title }}</h1>
-                <p class="text-gray-600 mb-4">{{ course.description }}</p>
+            <div class="p-4">
+                <p class="text-gray-600">{{ course.description }}</p>
                 {% if course.video_url %}
-                    <a href="{% url 'courses_by_category' category.id %}" class="text-blue-600 font-semibold hover:underline">View Courses</a>
+                    <a href="{{ course.video_url }}" class="text-blue-600 font-semibold mt-4 block" target="_blank">Watch Video</a>
+                {% elif course.video_file %}
+                    <video controls class="w-full h-auto mt-4">
+                        <source src="{{ course.video_file.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                {% endif %}
+                {% if course.is_premium %}
+                    {% if user.is_authenticated %}
+                        {% if not enrolled %}
+                            <a href="{% url 'checkout' course.slug %}" class="text-red-600 font-semibold mt-4 block">Buy Now</a>
+                        {% else %}
+                            <p class="text-green-600 font-semibold mt-4">You are already enrolled</p>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'checkout' course.slug %}" class="text-red-600 font-semibold mt-4 block">Buy Now</a>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>

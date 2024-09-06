@@ -123,6 +123,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# settings.py
+RAZORPAY_KEY_ID = 'rzp_test_zprZzima53Pr2k'
+RAZORPAY_KEY_SECRET = '4TEUVhm5eqeGwNMaCpUWiQPn'
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 

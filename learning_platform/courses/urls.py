@@ -18,8 +18,8 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('contact/', views.contact, name='contact'),
     path('add-course/', views.add_course, name='add_course'),
-
-    
+    path('checkout/<slug:slug>/', views.checkout, name='checkout'),
+    path('payment-success/', views.payment_success, name='payment_success'),
 ]
 
 if settings.DEBUG:  

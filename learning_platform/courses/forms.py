@@ -20,7 +20,7 @@ class SignUpForm(UserCreationForm):
         user.email = self.cleaned_data['email']
         if commit:
             user.save()
-            # Create the UserProfile and assign the role
+           
             UserProfile.objects.create(user=user, role=self.cleaned_data['role'])
         return user
 

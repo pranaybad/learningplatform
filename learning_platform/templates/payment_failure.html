@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="py-16 bg-gray-100">
+    <div class="container mx-auto px-4">
+        <h2 class="text-2xl font-bold text-center mb-8">Payment Failed</h2>
+        <p class="text-center text-red-600">There was an issue processing your payment. Please try again.</p>
+        <a href="{% url 'courses' %}" class="text-blue-600 font-semibold mt-4 block text-center">Return to Courses</a>
+    </div>
+</section>
+{% endblock %}
