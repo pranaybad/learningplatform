@@ -13,18 +13,20 @@
     <div class="container mx-auto px-6">
         <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Why Choose Us?</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 text-center">
-            <div class="p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-300">
-                <i class="fas fa-chalkboard-teacher text-5xl text-blue-600 mb-4"></i>
+
+            <div class="p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105">
+                <i class="fas fa-chalkboard-teacher text-5xl text-blue-600 mb-4 animate-pulse"></i>
                 <h3 class="text-xl font-semibold mb-2">Expert Instructors</h3>
                 <p class="text-gray-600">Learn from industry professionals with years of experience.</p>
             </div>
-            <div class="p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-300">
-                <i class="fas fa-layer-group text-5xl text-blue-600 mb-4"></i>
+            
+            <div class="p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105">
+                <i class="fas fa-layer-group text-5xl text-blue-600 mb-4 animate-pulse"></i>
                 <h3 class="text-xl font-semibold mb-2">Diverse Courses</h3>
                 <p class="text-gray-600">Choose from a wide range of courses across various fields.</p>
             </div>
-            <div class="p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-300">
-                <i class="fas fa-user-shield text-5xl text-blue-600 mb-4"></i>
+            <div class="p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105">
+                <i class="fas fa-user-shield text-5xl text-blue-600 mb-4 animate-pulse"></i>
                 <h3 class="text-xl font-semibold mb-2">Lifetime Access</h3>
                 <p class="text-gray-600">Enjoy unlimited access to your courses at any time.</p>
             </div>
@@ -68,17 +70,31 @@
         <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Featured Courses</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {% for course in featured_courses %}
-            <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
-                <img src="{{ course.image.url }}" alt="{{ course.title }}" class="w-full h-56 object-cover rounded-t-lg">
+            <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 transform hover:scale-105 overflow-hidden">
+                {% if course.image %}
+                    <img src="{{ course.image.url }}" alt="{{ course.title }}" class="w-full h-56 object-cover rounded-t-lg transition-transform duration-300 transform hover:scale-110">
+                {% else %}
+                    <img src="path/to/default/image.jpg" alt="Default Image" class="w-full h-56 object-cover rounded-t-lg">
+                {% endif %}
                 <div class="p-6">
                     <h3 class="text-xl font-semibold mb-4 text-gray-800 truncate">{{ course.title }}</h3>
                     <p class="text-gray-600 mb-4 text-sm">{{ course.description|truncatewords:15 }}</p>
-                    <a href="{% url 'course_detail' course.slug %}" class="text-blue-600 font-semibold hover:text-blue-800 transition-colors duration-300">Learn More</a>
+                    {% if course.is_premium %}
+                        <p class="text-gray-800 font-semibold mb-4">Price: {{ course.price }}</p>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'course_detail' course.slug %}" class="text-blue-600 font-semibold hover:text-blue-800 transition-colors duration-300">Watch Video</a>
+                    {% else %}
+                        <a href="{% url 'account_login' %}" class="text-blue-600 font-semibold hover:text-blue-800 transition-colors duration-300">Login to Watch Video</a>
+                    {% endif %}
                 </div>
             </div>
             {% empty %}
             <p class="text-center text-gray-600">No featured courses available at the moment.</p>
             {% endfor %}
+            
+            
+            
         </div>
     </div>
 </section>
@@ -93,27 +109,32 @@
             <div class="bg-white text-gray-800 rounded-lg shadow-lg p-6">
                 <p class="mb-4">"This platform has completely changed the way I approach learning. The courses are top-notch and the community is so supportive!"</p>
                 <div class="text-right">
-                    <h3 class="font-semibold">Jane Doe</h3>
+                    <h3 class="font-semibold">Sahil</h3>
                     <p class="text-sm text-gray-600">Web Developer</p>
                 </div>
             </div>
             <div class="bg-white text-gray-800 rounded-lg shadow-lg p-6">
                 <p class="mb-4">"The courses are well-structured and the instructors are very knowledgeable. I’ve learned so much in a short time."</p>
                 <div class="text-right">
-                    <h3 class="font-semibold">John Smith</h3>
+                    <h3 class="font-semibold">Pranay</h3>
                     <p class="text-sm text-gray-600">Data Scientist</p>
                 </div>
             </div>
             <div class="bg-white text-gray-800 rounded-lg shadow-lg p-6">
                 <p class="mb-4">"I love the flexibility this platform offers. I can learn at my own pace and the content is always up to date."</p>
                 <div class="text-right">
-                    <h3 class="font-semibold">Emily Johnson</h3>
+                    <h3 class="font-semibold">Raj</h3>
                     <p class="text-sm text-gray-600">Marketing Specialist</p>
                 </div>
             </div>
         </div>
     </div>
+    
 </section>
+
+
+
+
 
 <!-- Call to Action Section -->
 {% if user.is_authenticated %}

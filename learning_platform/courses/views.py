@@ -71,7 +71,7 @@ def checkout(request, slug):
     context = {
         'course': course,
         'order_id': order['id'],
-        'amount': order_amount,
+        'amount': order_amount / 100,
         'currency': order_currency,
         'razorpay_key': settings.RAZORPAY_KEY_ID
     }
@@ -103,14 +103,17 @@ def payment_success(request):
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
-    # index and other
+ # index and other page routing
 
 def index(request):
-
     featured_courses = Course.objects.filter(is_featured=True)
+    comments = Contact.objects.all()
+
+    # Optionally, you can log the messages for debugging
+    for comment in comments:
+        print(comment.message)
     
-   
-    return render(request, 'index.html', {'featured_courses': featured_courses})
+    return render(request, 'index.html', {'featured_courses': featured_courses, 'comments': comments})
 
 def course_list(request):
     courses = Course.objects.all()
@@ -276,8 +279,9 @@ def contact(request):
 
         data= Contact.objects.create(uname=uname, email=email, message=message)
         data.save()
+        print('this is the comments',data)
 
-        return redirect('')
+        return redirect('/')
 
 
 

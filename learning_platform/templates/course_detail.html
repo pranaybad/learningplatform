@@ -13,7 +13,11 @@
             <div class="p-4">
                 <p class="text-gray-600">{{ course.description }}</p>
                 {% if course.video_url %}
-                    <a href="{{ course.video_url }}" class="text-blue-600 font-semibold mt-4 block" target="_blank">Watch Video</a>
+                    {% comment %} <a href="{{ course.video_url }}" class="text-blue-600 font-semibold mt-4 block" target="_blank">Watch Video</a> {% endcomment %}
+                    {% with course.video_url|slice:"-11:" as video_id %}
+                    <iframe src="https://www.youtube.com/embed/{{ video_id }}" class="w-full h-64" frameborder="0" allowfullscreen></iframe>
+                  
+                    {% endwith %}
                 {% elif course.video_file %}
                     <video controls class="w-full h-auto mt-4">
                         <source src="{{ course.video_file.url }}" type="video/mp4">
